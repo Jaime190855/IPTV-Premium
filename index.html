@@ -437,19 +437,19 @@
         <h2>O Melhor dos Streamings em um só lugar</h2>
         <p style="margin-bottom: 20px; opacity: 0.7;">Netflix, Prime Video, Disney+, HBO Max, Globoplay e muito mais.</p>
         <div class="movie-grid">
-            <div class="movie-card" style="background-image: url('https://www.imagemfilmes.com.br/filme/zero-dc');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDVEs7t.jpg');">
                 <div class="movie-overlay">Ação / Aventura</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://www.imagemfilmes.com.br/filme/pov-presenca-oculta');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/u3bZgnGQ9T01sWNhyve4z0wH455.jpg');">
                 <div class="movie-overlay">Séries Premiadas</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://www.imagemfilmes.com.br/filme/yugo-and-lala');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/8Cd1J484YV787VnEqC25U25T2vW.jpg');">
                 <div class="movie-overlay">Lançamentos</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://www.imagemfilmes.com.br/filme/blindado');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg');">
                 <div class="movie-overlay">Infantil</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fespeciais.gazetadopovo.com.br%2Ffutebol%2Ftv%2Fjogos-de-hoje-onde-ver-online-e-na-tv%2F&psig=AOvVaw0yS-Cs21Qb9L8JcXuEle2w&ust=1769657644619000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLD-5OzBrZIDFQAAAAAdAAAAABAE');">
+            <div class="movie-card" style="background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0565c6a?auto=format&fit=crop&w=500&q=60');">
                 <div class="movie-overlay">Futebol Ao Vivo</div>
             </div>
         </div>
@@ -698,12 +698,9 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Verifica se a API retornou erro de "Usuário já existe"
-                    // OBS: Ajuste a string abaixo conforme a mensagem de erro real da sua API
                     if (data.message && (data.message.includes("exist") || data.message.includes("cadastrado"))) {
                          addMessage("❌ O servidor informou que este número já possui um teste ou cadastro ativo.", 'bot', false, true);
                          addOptions([{ label: "Falar com Suporte", value: "support" }]);
-                         // Mesmo sendo erro da API, marcamos como usado para evitar spam
                          markPhoneAsUsed(userData.phone);
                          return;
                     }
@@ -712,14 +709,11 @@
                     const pass = data.password || data.pass || data.senha || "Erro";
 
                     if(user === "Erro") {
-                         // Caso a API responda 200 OK mas sem dados (comum em alguns erros silenciados)
                          throw new Error("Dados vazios");
                     }
 
-                    // Sucesso: Marcar número como usado
                     markPhoneAsUsed(userData.phone);
 
-                    // Formatação Final
                     const fullMessage = `
                         <div style="font-size:0.85rem; text-align:left;">
                             <strong style="font-size:1rem; color:#39ff14;">✅ TESTE GERADO COM SUCESSO!</strong><br><br>
@@ -797,4 +791,3 @@
     </script>
 </body>
 </html>
-
