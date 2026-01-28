@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Premium - Neon 3D</title>
+    <title>Ultra IPTV 4K - Premium</title>
     <style>
         :root {
             --neon-green: #39ff14;
@@ -27,30 +27,48 @@
             color: var(--text-color);
             overflow-x: hidden;
             perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* --- Header --- */
+        /* --- Header & Logo --- */
         header {
             text-align: center;
-            padding: 80px 20px 40px;
+            padding: 40px 20px;
             background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             border-bottom: 2px solid var(--neon-green);
             box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
         }
 
-        h1 {
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        /* Se você tiver o link direto da imagem (jpg/png), descomente a linha abaixo e coloque o link no src */
+        /* <img src="SEU_LINK_AQUI.jpg" alt="Logo" style="max-width: 200px;"> */
+
+        /* Estilo de Texto Neon para substituir a logo caso não tenha imagem */
+        .logo-text {
             font-size: 3.5rem;
             text-transform: uppercase;
-            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-            margin-bottom: 15px;
-            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px var(--neon-green),
+                0 0 40px var(--neon-green),
+                0 0 80px var(--neon-green);
+            letter-spacing: 4px;
+            font-weight: 800;
         }
 
         p.subtitle {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: #ddd;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin: 10px auto 0;
+            opacity: 0.9;
         }
 
         /* --- Info Section --- */
@@ -79,6 +97,7 @@
         .stat-box:hover {
             border-color: var(--neon-green);
             box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            transform: translateY(-5px);
         }
 
         .stat-number {
@@ -87,7 +106,7 @@
             font-weight: bold;
         }
 
-        /* --- Streaming Showcase --- */
+        /* --- Streaming Showcase (Capas Corrigidas) --- */
         .showcase {
             padding: 50px 20px;
             text-align: center;
@@ -97,13 +116,15 @@
             font-size: 2rem;
             margin-bottom: 30px;
             color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .movie-grid {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 25px;
         }
 
         .movie-card {
@@ -111,17 +132,19 @@
             height: 270px;
             background-size: cover;
             background-position: center;
-            border-radius: 10px;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
+            border: 1px solid #333;
         }
 
         .movie-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green);
+            border-color: var(--neon-green);
         }
 
         .movie-overlay {
@@ -129,10 +152,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            font-size: 0.9rem;
+            background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0));
+            padding: 15px 10px;
+            font-size: 0.95rem;
             font-weight: bold;
+            text-shadow: 1px 1px 2px #000;
         }
 
         /* --- Pricing Container --- */
@@ -218,6 +242,51 @@
             background: var(--neon-green);
             color: #000;
             box-shadow: 0 0 30px var(--neon-green);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            background: #000;
+            border-top: 1px solid #222;
+            padding: 40px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .footer-col h3 {
+            color: var(--neon-green);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .footer-col p, .footer-col a {
+            color: #ccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .footer-col a:hover {
+            color: var(--neon-green);
+        }
+
+        .copy {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            border-top: 1px solid #111;
+            padding-top: 20px;
         }
 
         /* --- Chatbot Widget --- */
@@ -412,7 +481,9 @@
 <body>
 
     <header>
-        <h1>Ultra IPTV 4K</h1>
+        <div class="logo-container">
+            <div class="logo-text">ULTRA IPTV</div>
+        </div>
         <p class="subtitle">A revolução do entretenimento na sua casa. Sem travamentos, qualidade máxima.</p>
     </header>
 
@@ -434,22 +505,21 @@
     </section>
 
     <section class="showcase">
-        <h2>O Melhor dos Streamings em um só lugar</h2>
-        <p style="margin-bottom: 20px; opacity: 0.7;">Netflix, Prime Video, Disney+, HBO Max, Globoplay e muito mais.</p>
+        <h2>O Melhor dos Streamings</h2>
         <div class="movie-grid">
-            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDVEs7t.jpg');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg');">
                 <div class="movie-overlay">Ação / Aventura</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/u3bZgnGQ9T01sWNhyve4z0wH455.jpg');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg');">
                 <div class="movie-overlay">Séries Premiadas</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/8Cd1J484YV787VnEqC25U25T2vW.jpg');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg');">
                 <div class="movie-overlay">Lançamentos</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg');">
                 <div class="movie-overlay">Infantil</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0565c6a?auto=format&fit=crop&w=500&q=60');">
+            <div class="movie-card" style="background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0565c6a?auto=format&fit=crop&w=500&q=80');">
                 <div class="movie-overlay">Futebol Ao Vivo</div>
             </div>
         </div>
@@ -486,6 +556,30 @@
         </div>
     </div>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Atendimento</h3>
+                <p>📞 WhatsApp: <a href="https://wa.me/5551985502897" target="_blank">(51) 98550-2897</a></p>
+                <p>🕒 Seg a Sex: 24 horas</p>
+                <p>📧 Suporte via Chat e Zap</p>
+            </div>
+            <div class="footer-col">
+                <h3>Links Úteis</h3>
+                <a href="#" onclick="openChat('Gostaria de um teste')">Solicitar Teste Grátis</a>
+                <a href="#" onclick="openChat('Ver planos')">Planos e Preços</a>
+                <a href="#">Termos de Uso</a>
+            </div>
+            <div class="footer-col">
+                <h3>Sobre</h3>
+                <p>Fornecemos a melhor estabilidade do mercado. Sem antenas, apenas internet. Compatível com TV Box, Celular, PC e Smart TV.</p>
+            </div>
+        </div>
+        <div class="copy">
+            &copy; 2026 Ultra IPTV. Todos os direitos reservados.
+        </div>
+    </footer>
+
     <div class="chat-widget">
         <div class="chat-window" id="chatWindow">
             <div class="chat-header">
@@ -505,6 +599,10 @@
     <script>
         // --- Configurações da API ---
         const API_URL = "https://painel.vaptyplay.xyz/api/chatbot/XKjLMPR104/BV4D3rLaqZ";
+        
+        // --- Dados de Contato e Pagamento ---
+        const PIX_KEY = "51985335787";
+        const WHATSAPP_NUMBER = "5551985502897";
         
         let chatState = 'INIT'; 
         let userData = { name: '', phone: '' };
@@ -527,6 +625,9 @@
             window.style.display = 'flex';
             if (document.getElementById('chatBody').children.length === 0) {
                 initChat();
+            } else {
+                // Se já estiver aberto, adiciona a intenção do botão como mensagem do usuário (opcional)
+                if(msg) handleOption('custom_msg', msg);
             }
         }
 
@@ -583,41 +684,62 @@
         }
 
         function initChat() {
-            addMessage("Olá! Sou o assistente virtual da Ultra IPTV. 🚀\n\nComo posso ajudar você hoje?", 'bot');
+            addMessage("Olá! Sou o assistente virtual. 🚀\n\nComo posso ajudar você hoje?", 'bot');
             addOptions([
                 { label: "💰 Ver Planos", value: "plans" },
-                { label: "🆓 Teste Grátis (Gerar Agora)", value: "captcha_start" },
+                { label: "🆓 Teste Grátis", value: "captcha_start" },
                 { label: "🙋 Falar com Suporte", value: "support" }
             ]);
         }
 
         function handleOption(value, label) {
-            addMessage(label, 'user');
+            if (value !== 'custom_msg') addMessage(label, 'user');
+            if (value === 'custom_msg') addMessage(label, 'user'); // Trata msg externa
+
+            // Ajuste para reconhecer mensagens vindas dos botões externos
+            if (label.includes('Mensal') || label.includes('Trimestral')) {
+                value = 'plans';
+            }
             
             if (value === 'plans') {
-                addMessage("Temos os melhores preços do mercado:\n\n🟢 Mensal: R$ 35,00\n🟢 Trimestral: R$ 100,00 (Top!)", 'bot');
+                addMessage("Temos os melhores preços:\n\n🟢 Mensal: R$ 35,00\n🟢 Trimestral: R$ 100,00", 'bot');
                 addOptions([
-                    { label: "Quero o Mensal", value: "buy_monthly" },
-                    { label: "Quero o Trimestral", value: "buy_quarterly" },
+                    { label: "Quero o Mensal (R$ 35)", value: "buy_monthly" },
+                    { label: "Quero o Trimestral (R$ 100)", value: "buy_quarterly" },
                     { label: "Voltar", value: "back" }
                 ]);
+            } else if (value.startsWith('buy_')) {
+                // FLUXO DE PAGAMENTO PIX
+                let valor = value === 'buy_monthly' ? 'R$ 35,00' : 'R$ 100,00';
+                addMessage(`Ótima escolha! O valor é **${valor}**.`, 'bot');
+                addMessage("O pagamento é via **PIX**. Copie a chave abaixo:", 'bot');
+                
+                // Exibe a chave Pix em destaque
+                addMessage(`<div style="background:#000; padding:10px; border:1px dashed var(--neon-green); color:#fff; text-align:center;">
+                                🔑 CHAVE PIX:<br>
+                                <b style="font-size:1.1rem; color:var(--neon-green);">${PIX_KEY}</b>
+                            </div>`, 'bot', true);
+                
+                addMessage("Após o pagamento, envie o comprovante no nosso WhatsApp para liberarmos seu acesso imediatamente.", 'bot');
+                
+                addMessage(`<a href='https://wa.me/${WHATSAPP_NUMBER}?text=Ola,%20fiz%20o%20pagamento%20do%20plano%20${valor}' target='_blank' class='chat-link'>Enviar Comprovante no WhatsApp</a>`, 'bot', true);
+                
+                addOptions([{ label: "Voltar ao Início", value: "back" }]);
+
             } else if (value === 'captcha_start') {
                 startCaptcha();
             } else if (value === 'support') {
-                addMessage("Para falar com um humano, clique no botão abaixo para ir ao WhatsApp.", 'bot');
-                addMessage("<a href='https://wa.me/5500000000000' target='_blank' class='chat-link'>Abrir WhatsApp</a>", 'bot', true);
+                addMessage(`Nosso atendimento é de Segunda a Sexta, 24 horas.`, 'bot');
+                addMessage(`<a href='https://wa.me/${WHATSAPP_NUMBER}' target='_blank' class='chat-link'>Chamar no WhatsApp: (51) 98550-2897</a>`, 'bot', true);
                 addOptions([{ label: "Voltar", value: "back" }]);
             } else if (value === 'back') {
                 initChat();
-            } else if (value.startsWith('buy_')) {
-                addMessage("Ótima escolha! Chame no WhatsApp para finalizar o pagamento e liberar seu acesso.", 'bot');
-                addMessage("<a href='https://wa.me/5500000000000' target='_blank' class='chat-link'>Finalizar no WhatsApp</a>", 'bot', true);
             }
         }
 
         // --- Etapa 1: Captcha Anti-Robô ---
         function startCaptcha() {
-            // Gera numeros aleatórios entre 1 e 10
+            // Gera numeros aleatórios
             mathChallenge.a = Math.floor(Math.random() * 10) + 1;
             mathChallenge.b = Math.floor(Math.random() * 10) + 1;
             mathChallenge.result = mathChallenge.a + mathChallenge.b;
@@ -649,22 +771,19 @@
             } else if (chatState === 'WAITING_NAME') {
                 userData.name = text;
                 chatState = 'WAITING_PHONE';
-                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (Ex: 11999999999):`, 'bot');
+                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (Ex: 51999999999):`, 'bot');
 
             } else if (chatState === 'WAITING_PHONE') {
-                // Remove tudo que não é dígito
                 let rawPhone = text.replace(/\D/g, ''); 
                 
-                // Validação de formato (Segurança de Entrada)
                 if (rawPhone.length < 10 || rawPhone.length > 11) {
-                    addMessage("❌ Número inválido. O número deve ter DDD e 8 ou 9 dígitos. Tente novamente.", 'bot', false, true);
+                    addMessage("❌ Número inválido. Digite DDD + Número (ex: 51988887777).", 'bot', false, true);
                     return;
                 }
 
-                // Bloqueio Local por Dados (Impede usar o mesmo número neste navegador)
                 if (isPhoneBlocked(rawPhone)) {
-                    addMessage("⚠️ Este número já solicitou um teste recentemente. Para evitar spam, permitimos apenas um teste por número.", 'bot', false, true);
-                    addMessage("Se você já é cliente ou precisa de ajuda, chame no suporte.", 'bot');
+                    addMessage("⚠️ Este número já solicitou um teste recentemente.", 'bot', false, true);
+                    addMessage("Chame no suporte se precisar de ajuda.", 'bot');
                     addOptions([{ label: "Falar com Suporte", value: "support" }]);
                     document.getElementById('inputArea').style.display = 'none';
                     return;
@@ -677,7 +796,7 @@
         }
 
         async function processTrialRequest() {
-            addMessage("🔄 Conectando ao servidor... Validando seus dados...", 'bot');
+            addMessage("🔄 Gerando seu teste... Aguarde...", 'bot');
 
             const payload = {
                 nome: userData.name,
@@ -699,7 +818,7 @@
                     const data = await response.json();
                     
                     if (data.message && (data.message.includes("exist") || data.message.includes("cadastrado"))) {
-                         addMessage("❌ O servidor informou que este número já possui um teste ou cadastro ativo.", 'bot', false, true);
+                         addMessage("❌ Este número já possui um teste ativo.", 'bot', false, true);
                          addOptions([{ label: "Falar com Suporte", value: "support" }]);
                          markPhoneAsUsed(userData.phone);
                          return;
@@ -708,12 +827,11 @@
                     const user = data.username || data.user || data.usuario || "Erro";
                     const pass = data.password || data.pass || data.senha || "Erro";
 
-                    if(user === "Erro") {
-                         throw new Error("Dados vazios");
-                    }
+                    if(user === "Erro") throw new Error("Dados vazios");
 
                     markPhoneAsUsed(userData.phone);
 
+                    // Formatação exata solicitada
                     const fullMessage = `
                         <div style="font-size:0.85rem; text-align:left;">
                             <strong style="font-size:1rem; color:#39ff14;">✅ TESTE GERADO COM SUCESSO!</strong><br><br>
@@ -774,19 +892,16 @@
 
             } catch (error) {
                 console.error("Erro:", error);
-                addMessage("⚠️ Houve uma instabilidade ou bloqueio do servidor.", 'bot');
-                addMessage("Verifique se você já possui cadastro ou tente novamente mais tarde. Seus dados foram enviados para análise.", 'bot');
-                markPhoneAsUsed(userData.phone); // Bloqueia localmente também no erro
+                addMessage("⚠️ Houve uma instabilidade no servidor.", 'bot');
+                addMessage("Seus dados foram enviados. Verifique seu WhatsApp em instantes.", 'bot');
+                markPhoneAsUsed(userData.phone); 
                 addOptions([{ label: "Voltar", value: "back" }]);
                 chatState = 'INIT';
             }
         }
 
-        // Enter para enviar
         document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                handleUserText();
-            }
+            if (e.key === 'Enter') handleUserText();
         });
     </script>
 </body>
