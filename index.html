@@ -32,10 +32,32 @@
             min-height: 100vh;
         }
 
+        /* --- Top Bar (Info Extra) --- */
+        .top-bar {
+            background-color: #000;
+            color: var(--neon-green);
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .top-bar span::before {
+            content: '⚡';
+            margin-right: 5px;
+        }
+
         /* --- Header & Logo --- */
         header {
             text-align: center;
-            padding: 40px 20px;
+            padding: 40px 20px 20px; /* Reduzi padding inferior */
             background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             border-bottom: 2px solid var(--neon-green);
             box-shadow: 0 0 30px rgba(57, 255, 20, 0.15);
@@ -48,19 +70,48 @@
             align-items: center;
         }
 
-        /* CONFIGURAÇÃO DA LOGO */
         .logo-img {
-            max-width: 250px; /* Tamanho da logo */
+            max-width: 250px;
             height: auto;
-            filter: drop-shadow(0 0 10px var(--neon-green)); /* Brilho neon na logo */
+            filter: drop-shadow(0 0 10px var(--neon-green));
         }
 
         p.subtitle {
             font-size: 1.2rem;
             color: #ddd;
             max-width: 700px;
-            margin: 10px auto 0;
+            margin: 10px auto 20px;
             opacity: 0.9;
+        }
+
+        /* --- Channel Logos Section --- */
+        .channel-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .channel-logos img {
+            height: 40px; /* Altura padrão para alinhar */
+            width: auto;
+            opacity: 0.7;
+            transition: all 0.3s;
+            filter: grayscale(100%);
+        }
+
+        .channel-logos img:hover {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.1);
         }
 
         /* --- Info Section (3 Cards na Horizontal) --- */
@@ -72,10 +123,10 @@
         }
 
         .stats-grid {
-            display: flex; /* Garante horizontalidade */
+            display: flex;
             justify-content: center;
             gap: 30px;
-            flex-wrap: wrap; /* Permite quebrar linha apenas em celulares muito pequenos */
+            flex-wrap: wrap;
             margin-top: 30px;
         }
 
@@ -85,8 +136,8 @@
             padding: 30px;
             border-radius: 10px;
             transition: 0.3s;
-            flex: 1; /* Faz os 3 ocuparem o mesmo espaço */
-            min-width: 250px; /* Tamanho mínimo para não espremer demais */
+            flex: 1;
+            min-width: 250px;
         }
 
         .stat-box:hover {
@@ -101,7 +152,7 @@
             font-weight: bold;
         }
 
-        /* --- Streaming Showcase (Capas Corrigidas) --- */
+        /* --- Streaming Showcase --- */
         .showcase {
             padding: 50px 20px;
             text-align: center;
@@ -475,12 +526,30 @@
 </head>
 <body>
 
+    <div class="top-bar">
+        <span>Ativação Imediata</span>
+        <span>Sem Fidelidade</span>
+        <span>Anti-Travamento</span>
+        <span>Suporte Premium</span>
+    </div>
+
     <header>
         <div class="logo-container">
             <img src="https://cdn-icons-png.flaticon.com/512/31/31087.png" alt="Logo Ultra IPTV" class="logo-img">
         </div>
         <h1>Ultra IPTV 4K</h1>
-        <p class="subtitle">A revolução do entretenimento na sua casa. Sem travamentos, qualidade máxima.</p>
+        <p class="subtitle">A revolução do entretenimento na sua casa. Qualidade máxima.</p>
+        
+        <div class="channel-logos">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Globoplay_logo_2020.svg" alt="Globoplay">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Universal_Television_Logo.svg" alt="Universal TV">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/TNT_TV_logo.svg" alt="TNT">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo_%282024%29.svg" alt="Prime Video">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Discovery_Channel_-_Logo_2019.svg" alt="Discovery">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Megapix_logo_2011.png" alt="Megapix">
+            <img src="https://upload.wikimedia.org/wikipedia/pt/e/e9/Premiere_Logo_2019.png" alt="Premiere" onerror="this.src='https://cdn-icons-png.flaticon.com/512/33/33736.png'">
+        </div>
     </header>
 
     <section class="info-section">
@@ -583,7 +652,7 @@
                 <span class="chat-close" onclick="toggleChat()">✕</span>
             </div>
             <div class="chat-body" id="chatBody">
-                </div>
+            </div>
             <div class="chat-input-area" id="inputArea" style="display:none;">
                 <input type="text" id="userInput" placeholder="Digite aqui..." autocomplete="off">
                 <button onclick="handleUserText()">Enviar</button>
@@ -593,10 +662,7 @@
     </div>
 
     <script>
-        // --- Configurações da API ---
         const API_URL = "https://painel.vaptyplay.xyz/api/chatbot/XKjLMPR104/BV4D3rLaqZ";
-        
-        // --- Dados de Contato e Pagamento ---
         const PIX_KEY = "51985335787";
         const WHATSAPP_NUMBER = "5551985502897";
         
