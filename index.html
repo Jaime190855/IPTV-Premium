@@ -42,25 +42,17 @@
         }
 
         .logo-container {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Se você tiver o link direto da imagem (jpg/png), descomente a linha abaixo e coloque o link no src */
-        /* <img src="SEU_LINK_AQUI.jpg" alt="Logo" style="max-width: 200px;"> */
-
-        /* Estilo de Texto Neon para substituir a logo caso não tenha imagem */
-        .logo-text {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            color: #fff;
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px var(--neon-green),
-                0 0 40px var(--neon-green),
-                0 0 80px var(--neon-green);
-            letter-spacing: 4px;
-            font-weight: 800;
+        /* CONFIGURAÇÃO DA LOGO */
+        .logo-img {
+            max-width: 250px; /* Tamanho da logo */
+            height: auto;
+            filter: drop-shadow(0 0 10px var(--neon-green)); /* Brilho neon na logo */
         }
 
         p.subtitle {
@@ -71,27 +63,30 @@
             opacity: 0.9;
         }
 
-        /* --- Info Section --- */
+        /* --- Info Section (3 Cards na Horizontal) --- */
         .info-section {
             padding: 40px 20px;
             text-align: center;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            display: flex; /* Garante horizontalidade */
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap; /* Permite quebrar linha apenas em celulares muito pequenos */
             margin-top: 30px;
         }
 
         .stat-box {
             background: var(--glass);
             border: 1px solid #333;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             transition: 0.3s;
+            flex: 1; /* Faz os 3 ocuparem o mesmo espaço */
+            min-width: 250px; /* Tamanho mínimo para não espremer demais */
         }
 
         .stat-box:hover {
@@ -482,8 +477,9 @@
 
     <header>
         <div class="logo-container">
-            <div class="logo-text">ULTRA IPTV</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/31/31087.png" alt="Logo Ultra IPTV" class="logo-img">
         </div>
+        <h1>Ultra IPTV 4K</h1>
         <p class="subtitle">A revolução do entretenimento na sua casa. Sem travamentos, qualidade máxima.</p>
     </header>
 
@@ -519,7 +515,7 @@
             <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg');">
                 <div class="movie-overlay">Infantil</div>
             </div>
-            <div class="movie-card" style="background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0565c6a?auto=format&fit=crop&w=500&q=80');">
+            <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w500/t9ks5kQxUAxhVmnYKs3yCFk2e5D.jpg');">
                 <div class="movie-overlay">Futebol Ao Vivo</div>
             </div>
         </div>
@@ -626,7 +622,6 @@
             if (document.getElementById('chatBody').children.length === 0) {
                 initChat();
             } else {
-                // Se já estiver aberto, adiciona a intenção do botão como mensagem do usuário (opcional)
                 if(msg) handleOption('custom_msg', msg);
             }
         }
@@ -664,7 +659,6 @@
             body.scrollTop = body.scrollHeight;
         }
 
-        // --- Gestão de Segurança e Dados Bloqueados ---
         function getUsedPhones() {
             const stored = localStorage.getItem('iptv_used_phones');
             return stored ? JSON.parse(stored) : [];
@@ -694,9 +688,8 @@
 
         function handleOption(value, label) {
             if (value !== 'custom_msg') addMessage(label, 'user');
-            if (value === 'custom_msg') addMessage(label, 'user'); // Trata msg externa
+            if (value === 'custom_msg') addMessage(label, 'user');
 
-            // Ajuste para reconhecer mensagens vindas dos botões externos
             if (label.includes('Mensal') || label.includes('Trimestral')) {
                 value = 'plans';
             }
@@ -709,12 +702,10 @@
                     { label: "Voltar", value: "back" }
                 ]);
             } else if (value.startsWith('buy_')) {
-                // FLUXO DE PAGAMENTO PIX
                 let valor = value === 'buy_monthly' ? 'R$ 35,00' : 'R$ 100,00';
                 addMessage(`Ótima escolha! O valor é **${valor}**.`, 'bot');
                 addMessage("O pagamento é via **PIX**. Copie a chave abaixo:", 'bot');
                 
-                // Exibe a chave Pix em destaque
                 addMessage(`<div style="background:#000; padding:10px; border:1px dashed var(--neon-green); color:#fff; text-align:center;">
                                 🔑 CHAVE PIX:<br>
                                 <b style="font-size:1.1rem; color:var(--neon-green);">${PIX_KEY}</b>
@@ -737,9 +728,7 @@
             }
         }
 
-        // --- Etapa 1: Captcha Anti-Robô ---
         function startCaptcha() {
-            // Gera numeros aleatórios
             mathChallenge.a = Math.floor(Math.random() * 10) + 1;
             mathChallenge.b = Math.floor(Math.random() * 10) + 1;
             mathChallenge.result = mathChallenge.a + mathChallenge.b;
@@ -758,7 +747,6 @@
             addMessage(text, 'user');
             input.value = '';
 
-            // Lógica de Estados
             if (chatState === 'WAITING_CAPTCHA') {
                 if (parseInt(text) === mathChallenge.result) {
                     chatState = 'WAITING_NAME';
@@ -831,7 +819,6 @@
 
                     markPhoneAsUsed(userData.phone);
 
-                    // Formatação exata solicitada
                     const fullMessage = `
                         <div style="font-size:0.85rem; text-align:left;">
                             <strong style="font-size:1rem; color:#39ff14;">✅ TESTE GERADO COM SUCESSO!</strong><br><br>
