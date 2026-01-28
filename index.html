@@ -12,6 +12,7 @@
             --card-bg: #111;
             --text-color: #fff;
             --glass: rgba(255, 255, 255, 0.05);
+            --error-red: #ff3333;
         }
 
         * {
@@ -258,7 +259,7 @@
             position: absolute;
             bottom: 85px;
             right: 0;
-            width: 380px; /* Levemente mais largo para caber o texto */
+            width: 380px;
             height: 550px;
             background: #151515;
             border: 1px solid var(--neon-green);
@@ -313,6 +314,11 @@
             border-top-left-radius: 2px;
         }
 
+        .bot-error {
+            border-left-color: var(--error-red);
+            color: #ffcccc;
+        }
+
         .user-msg {
             background: var(--neon-green);
             color: #000;
@@ -321,7 +327,6 @@
             font-weight: 500;
         }
 
-        /* Estilo para links dentro do chat */
         .chat-link {
             color: var(--neon-green);
             text-decoration: none;
@@ -503,6 +508,7 @@
         
         let chatState = 'INIT'; 
         let userData = { name: '', phone: '' };
+        let mathChallenge = { a: 0, b: 0, result: 0 };
 
         function toggleChat() {
             const window = document.getElementById('chatWindow');
@@ -524,17 +530,19 @@
             }
         }
 
-        function addMessage(text, sender, isHtml = false) {
+        function addMessage(text, sender, isHtml = false, isError = false) {
             const body = document.getElementById('chatBody');
             const div = document.createElement('div');
-            div.className = `message ${sender === 'bot' ? 'bot-msg' : 'user-msg'}`;
+            let className = `message ${sender === 'bot' ? 'bot-msg' : 'user-msg'}`;
+            if (isError) className += ' bot-error';
+            
+            div.className = className;
             if (isHtml) {
                 div.innerHTML = text;
             } else {
                 div.innerText = text;
             }
             body.appendChild(div);
-            // Scroll automático para o final
             body.scrollTop = body.scrollHeight;
         }
 
@@ -555,11 +563,30 @@
             body.scrollTop = body.scrollHeight;
         }
 
+        // --- Gestão de Segurança e Dados Bloqueados ---
+        function getUsedPhones() {
+            const stored = localStorage.getItem('iptv_used_phones');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function markPhoneAsUsed(phone) {
+            let used = getUsedPhones();
+            if (!used.includes(phone)) {
+                used.push(phone);
+                localStorage.setItem('iptv_used_phones', JSON.stringify(used));
+            }
+        }
+
+        function isPhoneBlocked(phone) {
+            const used = getUsedPhones();
+            return used.includes(phone);
+        }
+
         function initChat() {
             addMessage("Olá! Sou o assistente virtual da Ultra IPTV. 🚀\n\nComo posso ajudar você hoje?", 'bot');
             addOptions([
                 { label: "💰 Ver Planos", value: "plans" },
-                { label: "🆓 Teste Grátis (Gerar Agora)", value: "test" },
+                { label: "🆓 Teste Grátis (Gerar Agora)", value: "captcha_start" },
                 { label: "🙋 Falar com Suporte", value: "support" }
             ]);
         }
@@ -574,8 +601,8 @@
                     { label: "Quero o Trimestral", value: "buy_quarterly" },
                     { label: "Voltar", value: "back" }
                 ]);
-            } else if (value === 'test') {
-                checkAndStartTest();
+            } else if (value === 'captcha_start') {
+                startCaptcha();
             } else if (value === 'support') {
                 addMessage("Para falar com um humano, clique no botão abaixo para ir ao WhatsApp.", 'bot');
                 addMessage("<a href='https://wa.me/5500000000000' target='_blank' class='chat-link'>Abrir WhatsApp</a>", 'bot', true);
@@ -588,15 +615,15 @@
             }
         }
 
-        function checkAndStartTest() {
-            if (localStorage.getItem('iptv_trial_requested') === 'true') {
-                addMessage("⚠️ Você já gerou um teste grátis anteriormente neste dispositivo.", 'bot');
-                addOptions([{ label: "Ver Planos", value: "plans" }]);
-                return;
-            }
+        // --- Etapa 1: Captcha Anti-Robô ---
+        function startCaptcha() {
+            // Gera numeros aleatórios entre 1 e 10
+            mathChallenge.a = Math.floor(Math.random() * 10) + 1;
+            mathChallenge.b = Math.floor(Math.random() * 10) + 1;
+            mathChallenge.result = mathChallenge.a + mathChallenge.b;
 
-            chatState = 'WAITING_NAME';
-            addMessage("Vou gerar seu acesso agora mesmo!\n\nQual é o seu **Nome**?", 'bot');
+            chatState = 'WAITING_CAPTCHA';
+            addMessage(`Para segurança, responda: Quanto é **${mathChallenge.a} + ${mathChallenge.b}**?`, 'bot');
             document.getElementById('inputArea').style.display = 'flex';
             document.getElementById('userInput').focus();
         }
@@ -609,25 +636,48 @@
             addMessage(text, 'user');
             input.value = '';
 
-            if (chatState === 'WAITING_NAME') {
+            // Lógica de Estados
+            if (chatState === 'WAITING_CAPTCHA') {
+                if (parseInt(text) === mathChallenge.result) {
+                    chatState = 'WAITING_NAME';
+                    addMessage("Correto! ✅\n\nQual é o seu **Nome**?", 'bot');
+                } else {
+                    addMessage("Resposta incorreta. Tente novamente.", 'bot', false, true);
+                    startCaptcha();
+                }
+
+            } else if (chatState === 'WAITING_NAME') {
                 userData.name = text;
                 chatState = 'WAITING_PHONE';
-                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (somente números):`, 'bot');
+                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (Ex: 11999999999):`, 'bot');
+
             } else if (chatState === 'WAITING_PHONE') {
-                userData.phone = text.replace(/\D/g, ''); 
+                // Remove tudo que não é dígito
+                let rawPhone = text.replace(/\D/g, ''); 
                 
-                if (userData.phone.length < 10) {
-                    addMessage("Número inválido. Digite novamente (DDD + Número).", 'bot');
+                // Validação de formato (Segurança de Entrada)
+                if (rawPhone.length < 10 || rawPhone.length > 11) {
+                    addMessage("❌ Número inválido. O número deve ter DDD e 8 ou 9 dígitos. Tente novamente.", 'bot', false, true);
                     return;
                 }
 
+                // Bloqueio Local por Dados (Impede usar o mesmo número neste navegador)
+                if (isPhoneBlocked(rawPhone)) {
+                    addMessage("⚠️ Este número já solicitou um teste recentemente. Para evitar spam, permitimos apenas um teste por número.", 'bot', false, true);
+                    addMessage("Se você já é cliente ou precisa de ajuda, chame no suporte.", 'bot');
+                    addOptions([{ label: "Falar com Suporte", value: "support" }]);
+                    document.getElementById('inputArea').style.display = 'none';
+                    return;
+                }
+
+                userData.phone = rawPhone;
                 document.getElementById('inputArea').style.display = 'none';
                 processTrialRequest();
             }
         }
 
         async function processTrialRequest() {
-            addMessage("🔄 Conectando ao servidor... Aguarde...", 'bot');
+            addMessage("🔄 Conectando ao servidor... Validando seus dados...", 'bot');
 
             const payload = {
                 nome: userData.name,
@@ -648,18 +698,35 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Tenta capturar o usuario e senha da resposta JSON da API
-                    // Ajuste estas chaves se sua API retornar nomes diferentes (ex: data.username, data.user)
+                    // Verifica se a API retornou erro de "Usuário já existe"
+                    // OBS: Ajuste a string abaixo conforme a mensagem de erro real da sua API
+                    if (data.message && (data.message.includes("exist") || data.message.includes("cadastrado"))) {
+                         addMessage("❌ O servidor informou que este número já possui um teste ou cadastro ativo.", 'bot', false, true);
+                         addOptions([{ label: "Falar com Suporte", value: "support" }]);
+                         // Mesmo sendo erro da API, marcamos como usado para evitar spam
+                         markPhoneAsUsed(userData.phone);
+                         return;
+                    }
+
                     const user = data.username || data.user || data.usuario || "Erro";
                     const pass = data.password || data.pass || data.senha || "Erro";
 
-                    // CONSTRUÇÃO DO TEXTO COMPLETO SOLICITADO
+                    if(user === "Erro") {
+                         // Caso a API responda 200 OK mas sem dados (comum em alguns erros silenciados)
+                         throw new Error("Dados vazios");
+                    }
+
+                    // Sucesso: Marcar número como usado
+                    markPhoneAsUsed(userData.phone);
+
+                    // Formatação Final
                     const fullMessage = `
                         <div style="font-size:0.85rem; text-align:left;">
+                            <strong style="font-size:1rem; color:#39ff14;">✅ TESTE GERADO COM SUCESSO!</strong><br><br>
                             <strong>*APPS DE DNS*</strong><br>
                             🌐 <b>DNS:</b> http://venom55.online<br>
-                            👤 <b>Usuário:</b> <span style="color:#39ff14">${user}</span><br>
-                            🔑 <b>Senha:</b> <span style="color:#39ff14">${pass}</span><br>
+                            👤 <b>Usuário:</b> <span style="color:#39ff14; font-size:1.1rem">${user}</span><br>
+                            🔑 <b>Senha:</b> <span style="color:#39ff14; font-size:1.1rem">${pass}</span><br>
                             <br>
                             🌐 <b>DNS IPTV SMARTERS:</b> http://gerardweb.top<br>
                             ➖➖➖➖➖➖➖<br>
@@ -704,22 +771,18 @@
                     `;
 
                     addMessage(fullMessage, 'bot', true);
-
-                    localStorage.setItem('iptv_trial_requested', 'true');
                     addOptions([{ label: "Voltar ao Início", value: "back" }]);
                     chatState = 'INIT';
 
                 } else {
-                    throw new Error("Erro API");
+                    throw new Error("Erro API: " + response.status);
                 }
 
             } catch (error) {
                 console.error("Erro:", error);
-                addMessage("⚠️ Houve uma instabilidade na conexão com o servidor de testes.", 'bot');
-                addMessage("Mas não se preocupe! Seus dados de acesso foram enviados para o seu WhatsApp.", 'bot');
-                
-                // Marca como feito para evitar flood
-                localStorage.setItem('iptv_trial_requested', 'true');
+                addMessage("⚠️ Houve uma instabilidade ou bloqueio do servidor.", 'bot');
+                addMessage("Verifique se você já possui cadastro ou tente novamente mais tarde. Seus dados foram enviados para análise.", 'bot');
+                markPhoneAsUsed(userData.phone); // Bloqueia localmente também no erro
                 addOptions([{ label: "Voltar", value: "back" }]);
                 chatState = 'INIT';
             }
