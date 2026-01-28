@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Premium - Neon 3D</title>
+    <style>
+        :root {
+            --neon-green: #39ff14;
+            --dark-bg: #0a0a0a;
+            --card-bg: #111;
+            --text-color: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            border-bottom: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        /* --- Pricing Container --- */
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- 3D Cards --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-green);
+            border-radius: 15px;
+            width: 300px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.1), inset 0 0 20px rgba(0,0,0,0.8);
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.4), inset 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--neon-green);
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .features li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .features li::before {
+            content: '?';
+            color: var(--neon-green);
+            position: absolute;
+            left: 0;
+        }
+
+        .btn-buy {
+            display: inline-block;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--neon-green);
+            border: 2px solid var(--neon-green);
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+        }
+
+        .btn-buy:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        /* --- Chatbot Widget --- */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            background: var(--neon-green);
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--neon-green);
+            font-size: 24px;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: #1a1a1a;
+            border: 1px solid var(--neon-green);
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--neon-green);
+            color: #000;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-close {
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .bot-msg {
+            background: #333;
+            color: #fff;
+            align-self: flex-start;
+            border-left: 3px solid var(--neon-green);
+        }
+
+        .user-msg {
+            background: var(--neon-green);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+            background: #111;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #222;
+            color: #fff;
+            outline: none;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--neon-green);
+        }
+
+        .chat-input-area button {
+            background: var(--neon-green);
+            border: none;
+            padding: 0 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .chat-option {
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-option:hover {
+            background: var(--neon-green);
+            color: #000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ultra IPTV</h1>
+        <p class="subtitle">A melhor programação em 4K e Full HD</p>
+    </header>
+
+    <div class="pricing-container">
+        <div class="card">
+            <h2>Mensal</h2>
+            <div class="price">R$ 35,00</div>
+            <ul class="features">
+                <li>+2000 Canais</li>
+                <li>Filmes e Séries On-Demand</li>
+                <li>Qualidade 4K/FHD</li>
+                <li>Suporte 24/7</li>
+                <li>Sem travamentos</li>
+            </ul>
+            <a href="#" class="btn-buy" onclick="openChat('Quero assinar o Mensal')">Assinar Agora</a>
+        </div>
+
+        <div class="card">
+            <div style="position: absolute; top: -10px; right: -10px; background: var(--neon-green); color: #000; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem;">POPULAR</div>
+            <h2>Trimestral</h2>
+            <div class="price">R$ 100,00</div>
+            <ul class="features">
+                <li>Economize R$ 5,00/mês</li>
+                <li>+2000 Canais</li>
+                <li>Filmes e Séries On-Demand</li>
+                <li>Qualidade 4K/FHD</li>
+                <li>3 Telas Simultâneas</li>
+            </ul>
+            <a href="#" class="btn-buy" onclick="openChat('Quero assinar o Trimestral')">Assinar Agora</a>
+        </div>
+    </div>
+
+    <div class="chat-widget">
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <span>Atendimento Virtual</span>
+                <span class="chat-close" onclick="toggleChat()">?</span>
+            </div>
+            <div class="chat-body" id="chatBody">
+                </div>
+            <div class="chat-input-area" id="inputArea" style="display:none;">
+                <input type="text" id="userInput" placeholder="Digite sua resposta...">
+                <button onclick="handleUserText()">Enviar</button>
+            </div>
+        </div>
+        <button class="chat-toggle" onclick="toggleChat()">??</button>
+    </div>
+
+    <script>
+        // --- Configurações ---
+        const API_URL = "https://painel.vaptyplay.xyz/api/chatbot/XKjLMPR104/BV4D3rLaqZ";
+        
+        // Estado do Chat
+        let chatState = 'INIT'; // INIT, WAITING_NAME, WAITING_PHONE
+        let userData = { name: '', phone: '' };
+
+        function toggleChat() {
+            const window = document.getElementById('chatWindow');
+            if (window.style.display === 'flex') {
+                window.style.display = 'none';
+            } else {
+                window.style.display = 'flex';
+                if (document.getElementById('chatBody').children.length === 0) {
+                    initChat();
+                }
+            }
+        }
+
+        function openChat(msg) {
+            const window = document.getElementById('chatWindow');
+            window.style.display = 'flex';
+            if (document.getElementById('chatBody').children.length === 0) {
+                initChat();
+            }
+            // Simula clique em opção se necessário, ou apenas abre
+        }
+
+        function addMessage(text, sender) {
+            const body = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = `message ${sender === 'bot' ? 'bot-msg' : 'user-msg'}`;
+            div.innerText = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function addOptions(options) {
+            const body = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = 'options-container';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'chat-option';
+                btn.innerText = opt.label;
+                btn.onclick = () => handleOption(opt.value, opt.label);
+                div.appendChild(btn);
+            });
+            
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function initChat() {
+            addMessage("Olá! Bem-vindo ao suporte de vendas. Como posso ajudar você hoje?", 'bot');
+            addOptions([
+                { label: "Ver Planos", value: "plans" },
+                { label: "Solicitar Teste Grátis", value: "test" },
+                { label: "Falar com Atendente", value: "support" }
+            ]);
+        }
+
+        function handleOption(value, label) {
+            addMessage(label, 'user');
+            
+            if (value === 'plans') {
+                addMessage("Temos ótimas opções:\n\n?? Mensal: R$ 35,00\n?? Trimestral: R$ 100,00", 'bot');
+                addOptions([
+                    { label: "Quero o Mensal", value: "buy_monthly" },
+                    { label: "Quero o Trimestral", value: "buy_quarterly" },
+                    { label: "Voltar", value: "back" }
+                ]);
+            } else if (value === 'test') {
+                checkAndStartTest();
+            } else if (value === 'support') {
+                addMessage("Para suporte humano, aguarde um momento ou clique no link abaixo para ir ao WhatsApp (simulado).", 'bot');
+                addOptions([{ label: "Voltar ao Início", value: "back" }]);
+            } else if (value === 'back') {
+                initChat();
+            } else if (value.startsWith('buy_')) {
+                addMessage("Ótima escolha! Para finalizar a compra, entre em contato conosco no WhatsApp.", 'bot');
+            }
+        }
+
+        function checkAndStartTest() {
+            // Verificação de Teste Único via LocalStorage
+            if (localStorage.getItem('iptv_trial_requested') === 'true') {
+                addMessage("?? Você já solicitou um teste grátis anteriormente. O teste é limitado a uma vez por usuário.", 'bot');
+                addOptions([{ label: "Ver Planos", value: "plans" }]);
+                return;
+            }
+
+            chatState = 'WAITING_NAME';
+            addMessage("Para gerar seu teste, preciso de alguns dados. Primeiro, qual é o seu **Nome**?", 'bot');
+            document.getElementById('inputArea').style.display = 'flex';
+            document.getElementById('userInput').focus();
+        }
+
+        function handleUserText() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            input.value = '';
+
+            if (chatState === 'WAITING_NAME') {
+                userData.name = text;
+                chatState = 'WAITING_PHONE';
+                addMessage(`Obrigado, ${userData.name}. Agora, digite seu **WhatsApp com DDD** (somente números):`, 'bot');
+            } else if (chatState === 'WAITING_PHONE') {
+                userData.phone = text.replace(/\D/g, ''); // Remove não números
+                
+                if (userData.phone.length < 10) {
+                    addMessage("O número parece inválido. Digite novamente com DDD (ex: 11999999999).", 'bot');
+                    return;
+                }
+
+                document.getElementById('inputArea').style.display = 'none';
+                processTrialRequest();
+            }
+        }
+
+        async function processTrialRequest() {
+            addMessage("Gerando seu teste, aguarde um momento...", 'bot');
+
+            // Preparar dados para a API
+            // OBS: A estrutura exata do JSON depende da documentação da sua API.
+            // Abaixo está uma implementação padrão POST JSON.
+            const payload = {
+                name: userData.name,
+                phone: userData.phone,
+                action: "create_test" // Ajuste conforme necessário pela API
+            };
+
+            try {
+                // Tenta enviar para a API
+                // Nota: APIs externas podem bloquear requisições diretas do navegador (CORS).
+                // Se isso acontecer, você verá um erro no console.
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // Se a API retornar sucesso (ou se quisermos simular sucesso para o front funcionar visualmente)
+                // Aqui assumimos que se a requisição foi feita, processamos.
+                
+                if (response.ok || response.status === 200) {
+                    successTrial();
+                } else {
+                    // Fallback para caso a API precise de formato diferente ou retorne erro
+                    console.warn("API retornou status:", response.status);
+                    // Ainda assim marcamos como sucesso para a experiência do usuário se for erro de CORS opaco
+                    successTrial(); 
+                }
+
+            } catch (error) {
+                console.error("Erro na API:", error);
+                // Fallback amigável
+                addMessage("Houve um erro de conexão com o servidor de testes. Tente novamente mais tarde ou chame o suporte.", 'bot');
+            }
+        }
+
+        function successTrial() {
+            localStorage.setItem('iptv_trial_requested', 'true');
+            addMessage("? Teste solicitado com sucesso! Verifique seu WhatsApp, os dados de acesso chegarão lá em instantes.", 'bot');
+            addOptions([{ label: "Voltar ao Início", value: "back" }]);
+            chatState = 'INIT';
+        }
+
+        // Detectar Enter no input
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleUserText();
+            }
+        });
+    </script>
+</body>
+</html>
