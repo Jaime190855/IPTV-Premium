@@ -131,6 +131,7 @@
             background: rgba(0,0,0,0.8);
             padding: 10px;
             font-size: 0.9rem;
+            font-weight: bold;
         }
 
         /* --- Pricing Container --- */
@@ -257,8 +258,8 @@
             position: absolute;
             bottom: 85px;
             right: 0;
-            width: 360px;
-            height: 500px;
+            width: 380px; /* Levemente mais largo para caber o texto */
+            height: 550px;
             background: #151515;
             border: 1px solid var(--neon-green);
             border-radius: 12px;
@@ -296,10 +297,10 @@
         }
 
         .message {
-            max-width: 85%;
+            max-width: 90%;
             padding: 12px;
             border-radius: 12px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
             word-wrap: break-word;
         }
@@ -320,14 +321,15 @@
             font-weight: 500;
         }
 
-        .credentials-box {
-            background: #000;
-            border: 1px dashed var(--neon-green);
-            padding: 10px;
-            margin-top: 5px;
-            font-family: monospace;
+        /* Estilo para links dentro do chat */
+        .chat-link {
             color: var(--neon-green);
-            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .chat-link:hover {
+            text-decoration: underline;
         }
 
         .chat-input-area {
@@ -437,13 +439,13 @@
                 <div class="movie-overlay">Séries Premiadas</div>
             </div>
             <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w200/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg');">
-                <div class="movie-overlay">Lançamentos 2024</div>
+                <div class="movie-overlay">Lançamentos</div>
             </div>
             <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w200/u3YQJctMzFN2wAvnkmXy41bXhFv.jpg');">
-                <div class="movie-overlay">Desenhos / Kids</div>
+                <div class="movie-overlay">Infantil</div>
             </div>
             <div class="movie-card" style="background-image: url('https://image.tmdb.org/t/p/w200/hr0L2aueqlP2ByUskSTT9CCJJOx.jpg');">
-                <div class="movie-overlay">Esportes Ao Vivo</div>
+                <div class="movie-overlay">Futebol Ao Vivo</div>
             </div>
         </div>
     </section>
@@ -497,7 +499,6 @@
 
     <script>
         // --- Configurações da API ---
-        // A API espera POST com json body: { "nome": "...", "whatsapp": "..." } geralmente.
         const API_URL = "https://painel.vaptyplay.xyz/api/chatbot/XKjLMPR104/BV4D3rLaqZ";
         
         let chatState = 'INIT'; 
@@ -533,6 +534,7 @@
                 div.innerText = text;
             }
             body.appendChild(div);
+            // Scroll automático para o final
             body.scrollTop = body.scrollHeight;
         }
 
@@ -563,7 +565,6 @@
         }
 
         function handleOption(value, label) {
-            // Não exibe a mensagem do usuário se for clique de opção para ficar mais limpo, ou exibe:
             addMessage(label, 'user');
             
             if (value === 'plans') {
@@ -577,26 +578,25 @@
                 checkAndStartTest();
             } else if (value === 'support') {
                 addMessage("Para falar com um humano, clique no botão abaixo para ir ao WhatsApp.", 'bot');
-                // Link simulado
-                addMessage("<a href='https://wa.me/5500000000000' target='_blank' style='color:#39ff14'>Abrir WhatsApp</a>", 'bot', true);
+                addMessage("<a href='https://wa.me/5500000000000' target='_blank' class='chat-link'>Abrir WhatsApp</a>", 'bot', true);
                 addOptions([{ label: "Voltar", value: "back" }]);
             } else if (value === 'back') {
                 initChat();
             } else if (value.startsWith('buy_')) {
-                addMessage("Ótima escolha! Chame no WhatsApp para finalizar o pagamento e liberar seu acesso imediato.", 'bot');
-                addMessage("<a href='https://wa.me/5500000000000' target='_blank' style='color:#39ff14'>Finalizar no WhatsApp</a>", 'bot', true);
+                addMessage("Ótima escolha! Chame no WhatsApp para finalizar o pagamento e liberar seu acesso.", 'bot');
+                addMessage("<a href='https://wa.me/5500000000000' target='_blank' class='chat-link'>Finalizar no WhatsApp</a>", 'bot', true);
             }
         }
 
         function checkAndStartTest() {
             if (localStorage.getItem('iptv_trial_requested') === 'true') {
-                addMessage("⚠️ Nosso sistema identificou que você já gerou um teste grátis anteriormente neste dispositivo.", 'bot');
+                addMessage("⚠️ Você já gerou um teste grátis anteriormente neste dispositivo.", 'bot');
                 addOptions([{ label: "Ver Planos", value: "plans" }]);
                 return;
             }
 
             chatState = 'WAITING_NAME';
-            addMessage("Vamos gerar seu teste agora mesmo! É rápido.\n\nQual é o seu **Nome**?", 'bot');
+            addMessage("Vou gerar seu acesso agora mesmo!\n\nQual é o seu **Nome**?", 'bot');
             document.getElementById('inputArea').style.display = 'flex';
             document.getElementById('userInput').focus();
         }
@@ -612,7 +612,7 @@
             if (chatState === 'WAITING_NAME') {
                 userData.name = text;
                 chatState = 'WAITING_PHONE';
-                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (somente números, ex: 11999999999):`, 'bot');
+                addMessage(`Certo, ${userData.name}. Digite seu **WhatsApp com DDD** (somente números):`, 'bot');
             } else if (chatState === 'WAITING_PHONE') {
                 userData.phone = text.replace(/\D/g, ''); 
                 
@@ -627,13 +627,12 @@
         }
 
         async function processTrialRequest() {
-            addMessage("🔄 Conectando ao servidor... Gerando seu acesso...", 'bot');
+            addMessage("🔄 Conectando ao servidor... Aguarde...", 'bot');
 
-            // Payload padrão para painéis de IPTV
             const payload = {
                 nome: userData.name,
-                whatsapp: userData.phone, // Alguns painéis usam 'whatsapp' ou 'telefone'
-                telefone: userData.phone // Enviando ambos por garantia
+                whatsapp: userData.phone,
+                telefone: userData.phone 
             };
 
             try {
@@ -648,49 +647,78 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Resposta API:", data); // Para debug
-
-                    // A estrutura da resposta varia por painel. 
-                    // Tenta encontrar campos comuns: username, password, url, link, message.
                     
-                    let user = data.username || data.user || data.usuario || "Verifique no Whats";
-                    let pass = data.password || data.pass || data.senha || "****";
-                    let url = data.url || data.link || data.dns || "http://...";
-                    let exp = data.vencimento || data.expiration || "2 horas";
+                    // Tenta capturar o usuario e senha da resposta JSON da API
+                    // Ajuste estas chaves se sua API retornar nomes diferentes (ex: data.username, data.user)
+                    const user = data.username || data.user || data.usuario || "Erro";
+                    const pass = data.password || data.pass || data.senha || "Erro";
 
-                    // Se a API retornar apenas uma mensagem de texto no campo message
-                    if (!data.username && data.message) {
-                         addMessage("✅ " + data.message, 'bot');
-                    } else {
-                        // Formata caixa de credenciais
-                        const credentialHtml = `
-                            ✅ <b>Teste Gerado com Sucesso!</b><br><br>
-                            <div class="credentials-box">
-                                👤 Usuário: ${user}<br>
-                                🔑 Senha: ${pass}<br>
-                                🌐 URL: ${url}<br>
-                                ⏳ Expira: ${exp}
-                            </div>
-                            <br>Copie e coloque no seu aplicativo!
-                        `;
-                        addMessage(credentialHtml, 'bot', true);
-                    }
+                    // CONSTRUÇÃO DO TEXTO COMPLETO SOLICITADO
+                    const fullMessage = `
+                        <div style="font-size:0.85rem; text-align:left;">
+                            <strong>*APPS DE DNS*</strong><br>
+                            🌐 <b>DNS:</b> http://venom55.online<br>
+                            👤 <b>Usuário:</b> <span style="color:#39ff14">${user}</span><br>
+                            🔑 <b>Senha:</b> <span style="color:#39ff14">${pass}</span><br>
+                            <br>
+                            🌐 <b>DNS IPTV SMARTERS:</b> http://gerardweb.top<br>
+                            ➖➖➖➖➖➖➖<br>
+                            <strong>*ACESSO - APP PARCEIROS*</strong><br>
+                            🌐 Código BlessedPlayer: spcine<br>
+                            🌐 Código AssitPlus: 471<br>
+                            🌐 Código EasyPlayer: 913<br>
+                            🌐 Provedor Xcloud: Cinesuper1<br>
+                            🌐 Código PLAYSIM: 471<br>
+                            ➖➖➖➖➖➖➖<br>
+                            <strong>Aplicativo na PLAYSTORE!!</strong><br>
+                            9STREAM PLAY<br>
+                            <a href="https://play.google.com/store/apps/details?id=com.ninestreamplay.app" target="_blank" class="chat-link">Baixar na PlayStore</a><br>
+                            👤 Usuário: ${user}<br>
+                            🔑 Senha: ${pass}<br>
+                            ➖➖➖➖➖➖➖<br>
+                            🔗 <strong>*LINKS*</strong> 🔗<br>
+                            🟢 Lista(.ts): <a href="http://venom55.online/get.php?username=${user}&password=${pass}&type=m3u_plus&output=mpegts" class="chat-link">Link M3U TS</a><br><br>
+                            🟡 Lista(.hls): <a href="http://venom55.online/get.php?username=${user}&password=${pass}&type=m3u_plus&output=hls" class="chat-link">Link M3U HLS</a><br>
+                            ➖➖➖➖➖➖➖<br>
+                            📺 <strong>*DNS PARA STB/SMARTUP*</strong><br>
+                            107.150.32.58<br>
+                            ➖➖➖➖➖➖➖<br>
+                            📺 <strong>*Assistir no PC:*</strong><br>
+                            1) <a href="http://webtv-new.iptvsmarters.com/login?type=player-api" class="chat-link">Web Player 1</a><br>
+                            2) <a href="http://super.webplays.top" class="chat-link">Web Player 2</a><br>
+                            ➖➖➖➖➖➖➖<br>
+                            <strong>APLICATIVO PRÓPRIOS</strong><br><br>
+                            <strong>NOVO VAPYT BRTV+</strong><br>
+                            LINK: aftv.news/4695889<br>
+                            CÓDIGO: 4695889<br><br>
+                            <strong>Vu player</strong><br>
+                            LINK: http://aftv.news/9148555<br>
+                            CÓDIGO: 9148555<br><br>
+                            <strong>Ibo</strong><br>
+                            CÓDIGO: 8618947<br>
+                            LINK: http://aftv.news/8618947<br><br>
+                            <strong>Unitv</strong><br>
+                            LINK: http://aftv.news/7557932<br>
+                            CÓDIGO: 7557932
+                        </div>
+                    `;
+
+                    addMessage(fullMessage, 'bot', true);
 
                     localStorage.setItem('iptv_trial_requested', 'true');
                     addOptions([{ label: "Voltar ao Início", value: "back" }]);
                     chatState = 'INIT';
 
                 } else {
-                    throw new Error("Erro na requisição: " + response.status);
+                    throw new Error("Erro API");
                 }
 
             } catch (error) {
                 console.error("Erro:", error);
-                // Fallback caso a API não permita requisição direta (CORS) ou falhe
-                addMessage("⚠️ O servidor demorou para responder, mas seu pedido foi registrado.", 'bot');
-                addMessage("Se os dados não apareceram aqui, verifique seu WhatsApp agora mesmo. Já enviamos para lá!", 'bot');
+                addMessage("⚠️ Houve uma instabilidade na conexão com o servidor de testes.", 'bot');
+                addMessage("Mas não se preocupe! Seus dados de acesso foram enviados para o seu WhatsApp.", 'bot');
                 
-                // Marca como solicitado para evitar flood, mesmo com erro visual
+                // Marca como feito para evitar flood
                 localStorage.setItem('iptv_trial_requested', 'true');
                 addOptions([{ label: "Voltar", value: "back" }]);
                 chatState = 'INIT';
